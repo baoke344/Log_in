@@ -9,6 +9,7 @@ import java.util.Scanner;
 public class Main {
 
     public static void main(String[] args) throws SQLException {
+        PreparedStatement pstmt_i = null;
         Statement stmt = null;
         //Connection and Open connection
         String url = "jdbc:postgresql://localhost/db_users";
@@ -26,13 +27,29 @@ public class Main {
 
         List<Users> list = new ArrayList<>();
 
-        //Execute a query
+        //Execute a INSERT query
         System.out.println("Creating INSERT statement...");
-        stmt = conn.createStatement();
-        String sql;
-        sql = "SELECT user_name, user_password FROM user_info";
 
-        ResultSet rs = stmt.executeQuery(sql);
+        String sql_insert;
+
+
+        for (int i = 0; i < 1; i++) {
+            sql_insert = "INSERT INTO user_info(user_name, user_password) VALUES(?,?)";
+            pstmt_i = conn.prepareStatement(sql_insert);
+
+            System.out.print("Enter username: ");
+            userName = scan.nextLine();
+            pstmt_i.setString(1,userName);
+            System.out.print("Enter password: ");
+            passWords = scan.nextLine();
+            pstmt_i.setString(2,passWords);
+            pstmt_i.execute();
+        }
+
+        //Execute a print query
+        stmt = conn.createStatement();
+        String sql_print = "SELECT user_name, user_password FROM user_info";
+        ResultSet rs = stmt.executeQuery(sql_print);
 
         //Extract data from result set
         while(rs.next()){
@@ -44,40 +61,19 @@ public class Main {
             user.setPassWords(userPasswords_data);
             list.add(user);
 
-//            System.out.println("User_Name: "+ userName_data);
-//            System.out.println("User_passwords: "+userPasswords_data);
+
         }
         for (Users user : list) {
             System.out.println(user);
         }
         rs.close();
-        stmt.close();;
+        stmt.close();
+        pstmt_i.close();
         conn.close();
 
 
 
-//        for (int i = 0; i < 3; i++) {
-//
-//            Users user = new Users();
-//            System.out.print("Enter username: ");
-//            userName = scan.nextLine();
-//            user.setUserName(userName);
-//            System.out.print("Enter password: ");
-//            passWords = scan.nextLine();
-//            user.setPassWords(passWords);
-//            list.add(user);
-//        }
-//
-//        for (Users user : list) {
-//            System.out.println(user);
-//        }
-//        scan.close();
     }
 
-//    public static List<Users> user() {
-//
-//        return List.of()
-//
-//        );
-//    }
+
 }
